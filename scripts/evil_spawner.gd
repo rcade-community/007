@@ -9,7 +9,7 @@ const GameOverMusic = preload("res://sfx/game_over.wav")
 @export var min_distance = 60.0
 @export var max_level = 6
 @export var level_complete_pause = 2.0
-@export var level_time_limit = 9.0
+@export var level_time_limit = 11.0
 @onready var end_screen = get_node("../EndScreen")
 @onready var timer_label = get_node("../HUD/TimerLabel")
 
@@ -33,15 +33,23 @@ func _ready():
 func register_kill():
 	kills += 1
 
+func _level_obstacle_count() -> int:
+	return 2 if current_level >= max_level else 1
+
 func _activate_level_obstacle():
 	var obstacle_nodes = get_tree().get_nodes_in_group("obstacle")
 	obstacles.clear()
 	if obstacle_nodes.is_empty():
 		return
-	var chosen_index = (current_level - 1) % obstacle_nodes.size()
-	for i in range(obstacle_nodes.size()):
+	var pool_size = obstacle_nodes.size()
+	var active_count = mini(_level_obstacle_count(), pool_size)
+	var start_index = (current_level - 1) % pool_size
+	var active_indices = {}
+	for i in range(active_count):
+		active_indices[(start_index + i) % pool_size] = true
+	for i in range(pool_size):
 		var node = obstacle_nodes[i]
-		var active = i == chosen_index
+		var active = active_indices.has(i)
 		if node.has_method("set_active"):
 			node.set_active(active)
 		if active:
