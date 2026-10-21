@@ -64,10 +64,20 @@ func _teleport_tick(delta):
 			global_position = spawner.find_free_position(40.0, [])
 
 func _try_move(offset: Vector2):
-	var target = global_position + offset
+	var target = _clamp_to_viewport(global_position + offset)
 	if _blocked(target):
 		return
 	global_position = target
+
+func _clamp_to_viewport(pos: Vector2) -> Vector2:
+	var viewport_size = get_viewport_rect().size
+	var margin = 16.0
+	var shape_node = get_node_or_null("CollisionShape2D")
+	if shape_node and shape_node.shape is CircleShape2D:
+		margin = shape_node.shape.radius
+	pos.x = clampf(pos.x, margin, viewport_size.x - margin)
+	pos.y = clampf(pos.y, margin, viewport_size.y - margin)
+	return pos
 
 func _blocked(pos: Vector2) -> bool:
 	for rect in obstacles:

@@ -23,6 +23,13 @@ func _physics_process(delta):
 		_explode_overlapping_evil()
 	get_input()
 	move_and_slide()
+	_clamp_to_viewport()
+
+func _clamp_to_viewport():
+	var viewport_size = get_viewport_rect().size
+	var margin = $CollisionShape2D.shape.radius
+	position.x = clampf(position.x, margin, viewport_size.x - margin)
+	position.y = clampf(position.y, margin, viewport_size.y - margin)
 
 func _explode_overlapping_evil():
 	for evil in get_tree().get_nodes_in_group("evil"):
