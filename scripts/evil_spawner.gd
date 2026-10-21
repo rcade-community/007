@@ -25,9 +25,13 @@ var level_transitioning = false
 var game_over = false
 var time_remaining = 0.0
 var obstacles: Array = []
+var kills = 0
 
 func _ready():
 	_spawn_level()
+
+func register_kill():
+	kills += 1
 
 func _activate_level_obstacle():
 	var obstacle_nodes = get_tree().get_nodes_in_group("obstacle")
@@ -65,7 +69,7 @@ func _detect_end():
 func _on_level_cleared():
 	level_transitioning = true
 	if current_level >= max_level:
-		end_screen.show_message("You Won!")
+		end_screen.show_victory(kills)
 		_play_victory_music()
 	else:
 		end_screen.show_message("Level %d complete!" % current_level)

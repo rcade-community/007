@@ -91,6 +91,8 @@ func explode():
 	exploding = true
 	monitoring = false
 	_play_explosion_sound()
+	if spawner and spawner.has_method("register_kill"):
+		spawner.register_kill()
 	if evil_type == "green" and generation < 1 and spawner and spawner.has_method("spawn_split"):
 		spawner.spawn_split(self)
 	var sprite = $Sprite2D
