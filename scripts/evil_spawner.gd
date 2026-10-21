@@ -9,7 +9,7 @@ const GameOverMusic = preload("res://sfx/game_over.wav")
 @export var min_distance = 60.0
 @export var max_level = 6
 @export var level_complete_pause = 2.0
-@export var level_time_limit = 7.0
+@export var level_time_limit = 9.0
 @onready var end_screen = get_node("../EndScreen")
 @onready var timer_label = get_node("../HUD/TimerLabel")
 
@@ -27,16 +27,24 @@ var time_remaining = 0.0
 var obstacles: Array = []
 
 func _ready():
-	_collect_obstacles()
 	_spawn_level()
 
-func _collect_obstacles():
+func _activate_level_obstacle():
+	var obstacle_nodes = get_tree().get_nodes_in_group("obstacle")
 	obstacles.clear()
-	for obstacle in get_tree().get_nodes_in_group("obstacle"):
-		var shape_node = obstacle.get_node_or_null("CollisionShape2D")
-		if shape_node and shape_node.shape is RectangleShape2D:
-			var size = shape_node.shape.size
-			obstacles.append(Rect2(obstacle.global_position - size / 2.0, size))
+	if obstacle_nodes.is_empty():
+		return
+	var chosen_index = (current_level - 1) % obstacle_nodes.size()
+	for i in range(obstacle_nodes.size()):
+		var node = obstacle_nodes[i]
+		var active = i == chosen_index
+		if node.has_method("set_active"):
+			node.set_active(active)
+		if active:
+			var shape_node = node.get_node_or_null("CollisionShape2D")
+			if shape_node and shape_node.shape is RectangleShape2D:
+				var size = shape_node.shape.size
+				obstacles.append(Rect2(node.global_position - size / 2.0, size))
 
 func _process(delta):
 	if game_over or level_transitioning:
@@ -88,6 +96,7 @@ func _level_enemy_count() -> int:
 
 func _spawn_level():
 	time_remaining = level_time_limit
+	_activate_level_obstacle()
 
 	var level_count = _level_enemy_count()
 	var placed_positions = []
