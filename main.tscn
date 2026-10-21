@@ -4,9 +4,19 @@
 [ext_resource type="Texture2D" uid="uid://4q335xxs2p" path="res://icon.svg" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://cfr6rqcyfoc3q" path="res://scripts/evil_spawner.gd" id="2_evil"]
 [ext_resource type="Script" path="res://scripts/end_screen.gd" id="3_end_screen"]
+[ext_resource type="Script" path="res://scripts/obstacle.gd" id="4_obstacle"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 32.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_obstacle1"]
+size = Vector2(56, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_obstacle2"]
+size = Vector2(56, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_obstacle3"]
+size = Vector2(16, 56)
 
 [node name="Node2D" type="Node" unique_id=422408999]
 
@@ -24,6 +34,48 @@ shape = SubResource("CircleShape2D_player")
 
 [node name="EvilSpawner" type="Node2D" parent="." unique_id=-1437606295]
 script = ExtResource("2_evil")
+
+[node name="Obstacle1" type="StaticBody2D" parent="."]
+position = Vector2(84, 68)
+script = ExtResource("4_obstacle")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle1"]
+shape = SubResource("RectangleShape2D_obstacle1")
+
+[node name="Visual" type="ColorRect" parent="Obstacle1"]
+offset_left = -28.0
+offset_top = -8.0
+offset_right = 28.0
+offset_bottom = 8.0
+color = Color(0.35, 0.35, 0.42, 1)
+
+[node name="Obstacle2" type="StaticBody2D" parent="."]
+position = Vector2(236, 172)
+script = ExtResource("4_obstacle")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle2"]
+shape = SubResource("RectangleShape2D_obstacle2")
+
+[node name="Visual" type="ColorRect" parent="Obstacle2"]
+offset_left = -28.0
+offset_top = -8.0
+offset_right = 28.0
+offset_bottom = 8.0
+color = Color(0.35, 0.35, 0.42, 1)
+
+[node name="Obstacle3" type="StaticBody2D" parent="."]
+position = Vector2(236, 68)
+script = ExtResource("4_obstacle")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Obstacle3"]
+shape = SubResource("RectangleShape2D_obstacle3")
+
+[node name="Visual" type="ColorRect" parent="Obstacle3"]
+offset_left = -8.0
+offset_top = -28.0
+offset_right = 8.0
+offset_bottom = 28.0
+color = Color(0.35, 0.35, 0.42, 1)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
